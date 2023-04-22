@@ -46,34 +46,33 @@ class _DataEntryState extends State<DataEntry> {
           GestureDetector(
             onTapUp: (TapUpDetails details) {
               setState(() {
-
                 Color point_color = Colors.black;
 
                 //Score Count up
-                if (_selected.elementAt(0)){
+                if (_selected.elementAt(0)) {
                   point_color = Colors.green;
                 }
 
                 //Pass
-                if (_selected.elementAt(1)){
+                if (_selected.elementAt(1)) {
                   point_color = Colors.yellow;
                 }
 
                 //Miss
-                if (_selected.elementAt(2)){
+                if (_selected.elementAt(2)) {
                   point_color = Colors.red;
                 }
 
                 points.add(Point(details.localPosition, point_color));
               });
             },
-              child: AspectRatio(
-                  aspectRatio: 9 / 16,
-                  child: Image.asset(
-                    "assets/basket_c.png",
-                    height: 30,
-                  )),
-            ),
+            child: AspectRatio(
+                aspectRatio: 9 / 16,
+                child: Image.asset(
+                  "assets/basket_c.png",
+                  fit: BoxFit.scaleDown,
+                )),
+          ),
           ...points.map((point) => Positioned(
                 left: point.position.dx,
                 top: point.position.dy,

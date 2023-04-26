@@ -73,7 +73,6 @@ class _DataEntryState extends State<DataEntry> with GetItStateMixin {
       LayoutBuilder(builder: (context,constraigns){
 
         double width = constraigns.maxWidth;
-        print(width);
 
 
         return Stack(
@@ -90,6 +89,8 @@ class _DataEntryState extends State<DataEntry> with GetItStateMixin {
               
                 var relitaveposx = details.localPosition.dx / width;
                 var relitaveposy = details.localPosition.dy;
+
+                 print(relitaveposx);
 
                 DataPointType point_type = DataPointType.Miss;
 

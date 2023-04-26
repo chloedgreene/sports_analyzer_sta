@@ -9,31 +9,46 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 //import 'package:flutter_svg/svg.dart';
 import 'package:get_it/get_it.dart';
+import 'package:get_it_mixin/get_it_mixin.dart';
 import 'package:sports_analyzer_sta/main.dart';
+
+enum DataPointType{
+  Basket,
+  Foul,
+  Miss
+}
 
 class Point {
   double posx;
   double posy;
-  Color color; // Color of the point
+  DataPointType type; // Color of the point
   int player;
 
-  Point(this.posx,this.posy, this.color,this.player);
+  Point(this.posx,this.posy, this.type,this.player);
 }
 
-class DataEntry extends StatefulWidget {
-  const DataEntry({super.key});
+class DataEntry extends StatefulWidget with GetItStatefulWidgetMixin {
+  //const DataEntry({super.key});
 
   @override
   State<DataEntry> createState() => _DataEntryState();
 }
 
-class _DataEntryState extends State<DataEntry> {
+class _DataEntryState extends State<DataEntry> with GetItStateMixin {
   List<bool> _selected = List.generate(3, (int index) {
     if (index == 1){
-      return true;
+      return true; //make the first option the default on 
     }
     return false;
   });
+
+  void rebuildAllChildren(BuildContext context) {
+    void rebuild(Element el) {
+      el.markNeedsBuild();
+      el.visitChildren(rebuild);
+    }
+    (context as Element).visitChildren(rebuild);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -51,7 +66,7 @@ class _DataEntryState extends State<DataEntry> {
     var GlobalDataInstance = GetIt.I.get<GlobalData>();
     var DataPointsInstance = GetIt.I.get<DataPoints>();
 
-    int player_number = GlobalDataInstance.selectedPlayer;
+    int player_number = watchOnly((GlobalData gd) => gd.selectedPlayer);
     //Add points to a list so they can be drawn
     return Center(
         child: ListView(children: [
@@ -76,24 +91,24 @@ class _DataEntryState extends State<DataEntry> {
                 var relitaveposx = details.localPosition.dx / width;
                 var relitaveposy = details.localPosition.dy;
 
-                Color point_color = Colors.black;
+                DataPointType point_type = DataPointType.Miss;
 
                 //Score Count up
                 if (_selected.elementAt(0)) {
-                  point_color = Colors.green;
+                  point_type = DataPointType.Basket;
                 }
 
                 //Pass
                 if (_selected.elementAt(1)) {
-                  point_color = Colors.yellow;
+                  point_type = DataPointType.Foul;
                 }
 
                 //Miss
                 if (_selected.elementAt(2)) {
-                  point_color = Colors.red;
+                  point_type = DataPointType.Miss;
                 }
 
-                DataPointsInstance.points.add(Point(relitaveposx,relitaveposy, point_color,player_number));
+                DataPointsInstance.points.add(Point(relitaveposx,relitaveposy, point_type,player_number));
               });
             },
             child: AspectRatio(
@@ -130,6 +145,21 @@ class _DataEntryState extends State<DataEntry> {
               );
             }
 
+            Color dot_colour = Colors.black;
+
+            switch (point.type){
+              
+              case DataPointType.Basket:
+                dot_colour = Colors.green;
+                break;
+              case DataPointType.Foul:
+                dot_colour = Colors.yellow;
+                break;
+              case DataPointType.Miss:
+                dot_colour = Colors.red;
+                break;
+            }
+
             return Positioned(
                 left: point.posx * width,
                 top: point.posy,
@@ -137,7 +167,7 @@ class _DataEntryState extends State<DataEntry> {
                   width: 15,
                   height: 15,
                   decoration: BoxDecoration(
-                    color: point.color,
+                    color: dot_colour,
                     shape: BoxShape.circle,
                   ),
                 ),
@@ -165,4 +195,5 @@ class _DataEntryState extends State<DataEntry> {
       )
     ]));
   }
+  
 }

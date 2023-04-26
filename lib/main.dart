@@ -12,15 +12,31 @@ final getIt = GetIt.instance;
 
 //////////////////////////////////////////
 ///These two classes are singletons are are STATIC and MUTABLE
-///These have SHARED DATA and are N O T objects
+///These have SHARED DATA and are N O T objects(in a oop sence)
 ///mkay future me
-///SINGLTONES, NOT OBJECTS`
+///SINGLTONES, NOT OBJECTS
 
-class DataPoints{
-  List<Point> points = [];
+class DataPoints extends ChangeNotifier{
+  List<Point> _points = [];
+
+  set points(List<Point> points){
+    _points = points;
+    notifyListeners();
+  }
+
+  List<Point> get points => _points;
+
 }
-class GlobalData{
-  int selectedPlayer = 0;
+class GlobalData extends ChangeNotifier{
+  int _selectedPlayer = 0;
+
+  set selectedPlayer(int player){
+    _selectedPlayer = player;
+    notifyListeners();
+  }
+
+  int get selectedPlayer => _selectedPlayer;
+
 }
 
 //////////////////////////////////////////
@@ -95,7 +111,7 @@ class _HomePageState extends State<HomePage> {
 
   int _selectedValue = 0;
 
-  static const List<Widget> _HomeScreens = <Widget>[DataEntry(), Stats()];
+  static final List<Widget> _HomeScreens = <Widget>[DataEntry(), Stats()];
 
   var GlobalDataInstance = GetIt.I.get<GlobalData>();
 
@@ -130,8 +146,10 @@ class _HomePageState extends State<HomePage> {
                       SBsetState((){
                         _selectedValue = value;
                         GlobalDataInstance.selectedPlayer = _selectedValue;
-
+                        rebuildAllChildren(context);
                       });
+
+                      rebuildAllChildren(context);
                     },
                   );
                 }
@@ -143,6 +161,7 @@ class _HomePageState extends State<HomePage> {
                 onPressed: () {
                   setState(() {
                     GlobalDataInstance.selectedPlayer = _selectedValue;
+                    rebuildAllChildren(context);
                   });
                   Navigator.of(context).pop();
                 },

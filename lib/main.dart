@@ -4,14 +4,45 @@ import 'package:flutter/material.dart';
 import 'package:numberpicker/numberpicker.dart';
 import 'package:sports_analyzer_sta/data_entry.dart';
 import 'package:sports_analyzer_sta/stats.dart';
+import 'package:get_it/get_it.dart';
+
+
+//We use getit to make singletons actually usable and clean in flutter
+final getIt = GetIt.instance;
+
+//////////////////////////////////////////
+///These two classes are singletons are are STATIC and MUTABLE
+///These have SHARED DATA and are N O T objects
+///mkay future me
+///SINGLTONES, NOT OBJECTS`
+
+class DataPoints{
+  List<Point> points = [];
+}
+class GlobalData{
+  int selectedPlayer = 0;
+}
+
+//////////////////////////////////////////
 
 void main() {
+
+  GetIt.I.registerSingleton<DataPoints>(
+    DataPoints(),
+  );
+
+  GetIt.I.registerSingleton<GlobalData>(
+    GlobalData(),
+  );
+
+
   runApp(
     DevicePreview(
       enabled: !kReleaseMode,
       builder: (context) => const SportsAnalyzerSta(), // Wrap your app
     ),
   );
+
 }
 
 // DevicePreview(
@@ -66,7 +97,18 @@ class _HomePageState extends State<HomePage> {
 
   static const List<Widget> _HomeScreens = <Widget>[DataEntry(), Stats()];
 
-  void pickValue() {
+  var GlobalDataInstance = GetIt.I.get<GlobalData>();
+
+
+  void rebuildAllChildren(BuildContext context) {
+    void rebuild(Element el) {
+      el.markNeedsBuild();
+      el.visitChildren(rebuild);
+    }
+    (context as Element).visitChildren(rebuild);
+  }
+
+  void pickValue(BuildContext context) {
 
     showDialog<int>(
         context: context,
@@ -82,9 +124,13 @@ class _HomePageState extends State<HomePage> {
                     onChanged: (value) {
                       setState(() {
                         _selectedValue = value;
+                        GlobalDataInstance.selectedPlayer = _selectedValue;
+                        rebuildAllChildren(context);
                       });
                       SBsetState((){
                         _selectedValue = value;
+                        GlobalDataInstance.selectedPlayer = _selectedValue;
+
                       });
                     },
                   );
@@ -95,6 +141,9 @@ class _HomePageState extends State<HomePage> {
               TextButton(
                 child: const Text("OK"),
                 onPressed: () {
+                  setState(() {
+                    GlobalDataInstance.selectedPlayer = _selectedValue;
+                  });
                   Navigator.of(context).pop();
                 },
               )
@@ -133,10 +182,11 @@ class _HomePageState extends State<HomePage> {
         ),
         floatingActionButton: FloatingActionButton.extended(
           onPressed: () {
-            pickValue();
+            pickValue(context);
           },
           icon: const Icon(Icons.numbers),
           label: Text("$_selectedValue"),
         ));
   }
 }
+ 

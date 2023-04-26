@@ -130,7 +130,7 @@ class _HomePageState extends State<HomePage> {
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
-            title: Text("Get Player Number"),
+            title: Text("Player Number"),
             content:StatefulBuilder(
                 builder: (context, SBsetState) {
                   return NumberPicker(

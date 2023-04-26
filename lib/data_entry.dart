@@ -90,8 +90,6 @@ class _DataEntryState extends State<DataEntry> with GetItStateMixin {
                 var relitaveposx = details.localPosition.dx / width;
                 var relitaveposy = details.localPosition.dy;
 
-                 print(relitaveposx);
-
                 DataPointType point_type = DataPointType.Miss;
 
                 //Score Count up

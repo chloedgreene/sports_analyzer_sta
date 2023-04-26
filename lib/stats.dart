@@ -2,140 +2,65 @@
 //i mean most, not all code
 
 
-import 'package:device_preview/device_preview.dart';
 import 'package:fl_chart/fl_chart.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
+import 'package:get_it_mixin/get_it_mixin.dart';
+import 'package:sports_analyzer_sta/data_entry.dart';
 
 import 'main.dart';
 
-class Stats extends StatefulWidget{
+class Stats extends StatelessWidget with GetItMixin{
 
-  const Stats({super.key});
-
-  @override
-  State<Stats> createState() => _StatsState();
-
-}
-
-class _StatsState extends State<Stats>{
-
-  Widget placeholder_item(){
-    return const Placeholder();
-  }
 
   @override
   Widget build(BuildContext context) {
 
-    var GlobalDataInstance = GetIt.I.get<GlobalData>();
-    var DataPointsInstance = GetIt.I.get<DataPoints>();
-    int player = GlobalDataInstance.selectedPlayer;
+    //Points here are refering to datapoints
 
-    return GridView.count(
+    final points = watchOnly((DataPoints dp) => dp.points         );
+    final player = watchOnly((GlobalData gd) => gd.selectedPlayer );
 
-      padding: const EdgeInsets.all(20),
-      crossAxisSpacing: 10,
-      mainAxisSpacing: 10,
-      crossAxisCount: 2,
+    final _playerPoints = points.where((i) => i.player == player).toList();
 
-      children: [
-        Text(
-            "Stat's for Player: $player",
-            style: const TextStyle(fontSize: 32),
-        ),
-        SizedBox(
-          height: 500,
-          child: PieChart(
+    final _totalPoints = points.where((i) => i.player == player).toList();
+    final _totalfouls    = _playerPoints.where((p) => p.type == DataPointType.Foul).length;
+    final _totalmiss     = _playerPoints.where((p) => p.type == DataPointType.Miss).length;
+    final _totalbasckets = _playerPoints.where((p) => p.type == DataPointType.Foul).length;
+
+
+    return Center(
+      child: GridView.count(
+        crossAxisCount: 2,
+        children: [
+          Text(
+            "Data for player: $player",
+            style: const TextStyle(
+              fontSize: 38
+            ),
+            ),
+          PieChart(
             PieChartData(
               sections: [
                 PieChartSectionData(
-                  color: Colors.red,
-                  value: 1/3,
-                  title: 'Miss',
+                  color: Colors.amber,
+                  value: 100.0 - player 
                 ),
-                PieChartSectionData(
-                  color: Colors.yellow,
-                  value: 1/3,
-                  title: 'Foul',
-                ),
-                PieChartSectionData(
-                  color: Colors.green,
-                  value: 1/3,
-                  title: 'Basket',
-                )
+                
               ]
             ),
             swapAnimationDuration: Duration(milliseconds: 150), // Optional
             swapAnimationCurve: Curves.linear, // Optional
-            
           ),
-        ),
-        SizedBox(
-          height: 500,
-          child: PieChart(
-            PieChartData(
-              sections: [
-                PieChartSectionData(
-                  color: Colors.red,
-                  value: 1/3,
-                  title: 'Miss',
-                ),
-                PieChartSectionData(
-                  color: Colors.yellow,
-                  value: 1/3,
-                  title: 'Foul',
-                ),
-                PieChartSectionData(
-                  color: Colors.green,
-                  value: 1/3,
-                  title: 'Basket',
-                )
-              ]
-            ),
-            swapAnimationDuration: Duration(milliseconds: 150), // Optional
-            swapAnimationCurve: Curves.linear, // Optional
-            
-          ),
-        ),
-        SizedBox(
-          height: 500,
-          child: PieChart(
-            PieChartData(
-              sections: [
-                PieChartSectionData(
-                  color: Colors.red,
-                  value: 1/3,
-                  title: 'Miss',
-                ),
-                PieChartSectionData(
-                  color: Colors.yellow,
-                  value: 1/3,
-                  title: 'Foul',
-                ),
-                PieChartSectionData(
-                  color: Colors.green,
-                  value: 1/3,
-                  title: 'Basket',
-                )
-              ]
-            ),
-            swapAnimationDuration: Duration(milliseconds: 150), // Optional
-            swapAnimationCurve: Curves.linear, // Optional
-            
-          ),
-        ),
-
-        BarChart(
-          BarChartData(
-            
-          ),
-          swapAnimationDuration: Duration(milliseconds: 150), // Optional
-          swapAnimationCurve: Curves.linear, // Optional
-        )
-
-      ],
+          Placeholder(),
+          Placeholder(),
+          Placeholder(),
+          Placeholder()
+        ],
+      ),
     );
+
+
   }
 
 }

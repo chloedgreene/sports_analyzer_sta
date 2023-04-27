@@ -120,7 +120,7 @@ class _DataEntryState extends State<DataEntry> with GetItStateMixin {
 
                 return Positioned(
                     left: point.posx * width,
-                    top: point.posy,
+                    top: point.posy * (width * (16/9)),
                     child: Tooltip(
                       message: "Player $x",
                       child: Container(

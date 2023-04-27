@@ -96,8 +96,7 @@ class Stats extends StatelessWidget with GetItMixin {
 
 
     return Center(
-      child: GridView.count(
-        crossAxisCount: 1,
+      child: ListView(
         children: [
           //Data Showing what player it is
           Column(
@@ -110,6 +109,8 @@ class Stats extends StatelessWidget with GetItMixin {
             ],
           ),
           chort_diagram(_playerPoints),
+          Placeholder(),
+          Placeholder(),
           Placeholder()
         ],
       ),

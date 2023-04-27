@@ -9,6 +9,50 @@ import 'package:sports_analyzer_sta/data_entry.dart';
 import 'main.dart';
 
 class Stats extends StatelessWidget with GetItMixin {
+  // ignore: non_constant_identifier_names
+  Widget chort_diagram(List<Point> playerPoints) {
+    return LayoutBuilder(builder: (context, constsains) {
+      return Stack(
+        children: [
+          AspectRatio(
+              aspectRatio: 9 / 16,
+              child: Image.asset(
+                "assets/basket_c.png",
+                fit: BoxFit.scaleDown,
+              )),
+          ...playerPoints.map((point) {
+            Color dot_colour = Colors.black;
+
+            switch (point.type) {
+              case DataPointType.Basket:
+                dot_colour = Colors.green;
+                break;
+              case DataPointType.Foul:
+                dot_colour = Colors.yellow;
+                break;
+              case DataPointType.Miss:
+                dot_colour = Colors.red;
+                break;
+            }
+
+            return Positioned(
+              left: point.posx * constsains.maxWidth,
+              top: point.posy * (constsains.maxWidth * (16/9)),
+              child: Container(
+                width: 15,
+                height: 15,
+                decoration: BoxDecoration(
+                  color: dot_colour,
+                  shape: BoxShape.circle,
+                ),
+              ),
+            );
+          }),
+        ],
+      );
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     //Points here are refering to datapoints
@@ -32,9 +76,28 @@ class Stats extends StatelessWidget with GetItMixin {
         .length
         .toDouble();
 
+    if (_totalPoints < 12) {
+      // 12 points give enought data to start building a model
+      return Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Text(
+              "Please add more data for player $player",
+              style: const TextStyle(fontSize: 18),
+            ),
+            const CircularProgressIndicator()
+          ],
+        ),
+      );
+    }
+
+
+
     return Center(
       child: GridView.count(
-        crossAxisCount: 2,
+        crossAxisCount: 1,
         children: [
           //Data Showing what player it is
           Column(
@@ -46,27 +109,7 @@ class Stats extends StatelessWidget with GetItMixin {
               Divider()
             ],
           ),
-          PieChart(
-            PieChartData(sections: [
-              PieChartSectionData(
-                  title: "Fouls",
-                  color: Colors.amber,
-                  value: _totalPoints - _totalfouls),
-              PieChartSectionData(
-                  title: "Basket's",
-                  color: Colors.green,
-                  value: _totalPoints - _totalbasckets),
-              PieChartSectionData(
-                  title: "Miss's",
-                  color: Colors.red,
-                  value: _totalPoints - _totalmiss),
-            ]),
-            swapAnimationDuration: Duration(milliseconds: 150), // Optional
-            swapAnimationCurve: Curves.linear, // Optional
-          ),
-          Placeholder(),
-          Placeholder(),
-          Placeholder(),
+          chort_diagram(_playerPoints),
           Placeholder()
         ],
       ),

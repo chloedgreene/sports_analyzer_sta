@@ -12,11 +12,7 @@ import 'package:get_it/get_it.dart';
 import 'package:get_it_mixin/get_it_mixin.dart';
 import 'package:sports_analyzer_sta/main.dart';
 
-enum DataPointType{
-  Basket,
-  Foul,
-  Miss
-}
+enum DataPointType { Basket, Foul, Miss }
 
 class Point {
   double posx;
@@ -24,7 +20,7 @@ class Point {
   DataPointType type; // Color of the point
   int player;
 
-  Point(this.posx,this.posy, this.type,this.player);
+  Point(this.posx, this.posy, this.type, this.player);
 }
 
 class DataEntry extends StatefulWidget with GetItStatefulWidgetMixin {
@@ -36,8 +32,8 @@ class DataEntry extends StatefulWidget with GetItStatefulWidgetMixin {
 
 class _DataEntryState extends State<DataEntry> with GetItStateMixin {
   List<bool> _selected = List.generate(3, (int index) {
-    if (index == 1){
-      return true; //make the first option the default on 
+    if (index == 1) {
+      return true; //make the first option the default on
     }
     return false;
   });
@@ -47,12 +43,12 @@ class _DataEntryState extends State<DataEntry> with GetItStateMixin {
       el.markNeedsBuild();
       el.visitChildren(rebuild);
     }
+
     (context as Element).visitChildren(rebuild);
   }
 
   @override
   Widget build(BuildContext context) {
-
     //_selected[0] = true;
     //Set colour of the chort to be dynamic to phone themeing
     var brightness =
@@ -70,98 +66,91 @@ class _DataEntryState extends State<DataEntry> with GetItStateMixin {
     //Add points to a list so they can be drawn
     return Center(
         child: ListView(children: [
-      LayoutBuilder(builder: (context,constraigns){
-
+      LayoutBuilder(builder: (context, constraigns) {
         double width = constraigns.maxWidth;
 
-
         return Stack(
-        children: [
-          GestureDetector(
-            onTapUp: (TapUpDetails details) {
-              setState(() {
+          children: [
+            GestureDetector(
+              onTapUp: (TapUpDetails details) {
+                setState(() {
+                  // do some weird tom fuckery to get the height from the width(aspect ratio math bs)
 
-                
+                  var pos = Offset(details.localPosition.dx / width,
+                      details.localPosition.dy);
 
-                // do some weird tom fuckery to get the height from the width(aspect ratio math bs)
-                                
-                var pos = Offset(details.localPosition.dx / width, details.localPosition.dy);
-              
-                var relitaveposx = details.localPosition.dx / width;
-                var relitaveposy = details.localPosition.dy;
+                  var relitaveposx = details.localPosition.dx / width;
+                  var relitaveposy =
+                      details.localPosition.dy / (width * (16/9));
 
-                DataPointType point_type = DataPointType.Miss;
+                  print(relitaveposy);
 
-                //Score Count up
-                if (_selected.elementAt(0)) {
-                  point_type = DataPointType.Basket;
-                }
+                  DataPointType point_type = DataPointType.Miss;
 
-                //Pass
-                if (_selected.elementAt(1)) {
-                  point_type = DataPointType.Foul;
-                }
+                  //Score Count up
+                  if (_selected.elementAt(0)) {
+                    point_type = DataPointType.Basket;
+                  }
 
-                //Miss
-                if (_selected.elementAt(2)) {
-                  point_type = DataPointType.Miss;
-                }
+                  //Pass
+                  if (_selected.elementAt(1)) {
+                    point_type = DataPointType.Foul;
+                  }
 
-                DataPointsInstance.points.add(Point(relitaveposx,relitaveposy, point_type,player_number));
-              });
-            },
-            child: AspectRatio(
-                aspectRatio: 9 / 16,
-                child: Image.asset(
-                  "assets/basket_c.png",
-                  fit: BoxFit.scaleDown,
-                )
-                ),
-          ),
-          ...DataPointsInstance.points.map((point) {
+                  //Miss
+                  if (_selected.elementAt(2)) {
+                    point_type = DataPointType.Miss;
+                  }
 
-            //grwy out points and make then small
-            if (point.player != player_number){
-              var x = point.player;              
-              
+                  DataPointsInstance.points.add(Point(
+                      relitaveposx, relitaveposy, point_type, player_number));
+                });
+              },
+              child: AspectRatio(
+                  aspectRatio: 9 / 16,
+                  child: Image.asset(
+                    "assets/basket_c.png",
+                    fit: BoxFit.scaleDown,
+                  )),
+            ),
+            ...DataPointsInstance.points.map((point) {
+              //grwy out points and make then small
+              if (point.player != player_number) {
+                var x = point.player;
+
                 return Positioned(
+                    left: point.posx * width,
+                    top: point.posy,
+                    child: Tooltip(
+                      message: "Player $x",
+                      child: Container(
+                        width: 10,
+                        height: 10,
+                        decoration: const BoxDecoration(
+                          color: Color.fromARGB(127, 158, 158, 158),
+                          shape: BoxShape.circle,
+                        ),
+                      ),
+                    ));
+              }
+
+              Color dot_colour = Colors.black;
+
+              switch (point.type) {
+                case DataPointType.Basket:
+                  dot_colour = Colors.green;
+                  break;
+                case DataPointType.Foul:
+                  dot_colour = Colors.yellow;
+                  break;
+                case DataPointType.Miss:
+                  dot_colour = Colors.red;
+                  break;
+              }
+
+              return Positioned(
                 left: point.posx * width,
-                top: point.posy,
-                child: Tooltip(
-
-                  message: "Player $x",
-                  child: Container(
-                  width:  10,
-                  height: 10,
-                  decoration: const BoxDecoration(
-                    color: Color.fromARGB(127, 158, 158, 158),
-                    shape: BoxShape.circle,
-                   
-
-                  ),
-                ),
-                )
-              );
-            }
-
-            Color dot_colour = Colors.black;
-
-            switch (point.type){
-              
-              case DataPointType.Basket:
-                dot_colour = Colors.green;
-                break;
-              case DataPointType.Foul:
-                dot_colour = Colors.yellow;
-                break;
-              case DataPointType.Miss:
-                dot_colour = Colors.red;
-                break;
-            }
-
-            return Positioned(
-                left: point.posx * width,
-                top: point.posy,
+                top: point.posy * (width * (16/9)),
                 child: Container(
                   width: 15,
                   height: 15,
@@ -171,10 +160,9 @@ class _DataEntryState extends State<DataEntry> with GetItStateMixin {
                   ),
                 ),
               );
-          }),
-        ],
-      );
-
+            }),
+          ],
+        );
       }),
       Center(
         child: ToggleButtons(
@@ -194,5 +182,4 @@ class _DataEntryState extends State<DataEntry> with GetItStateMixin {
       )
     ]));
   }
-  
 }

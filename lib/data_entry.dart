@@ -20,7 +20,17 @@ class Point {
   DataPointType type; // Color of the point
   int player;
 
+  Map<String, dynamic> toJson() =>
+      {'pos_x': posx, 'pos_y': posy, 'type': type.toString(), 'player': player};
+
   Point(this.posx, this.posy, this.type, this.player);
+
+  Point.fromJson(Map<String, dynamic> json)
+      : posy = json['pos_y'],
+        posx = json['pos_x'],
+        type = DataPointType.values
+            .byName(json['type'].toString().split('.').elementAt(1)),
+        player = json['player'];
 }
 
 class DataEntry extends StatefulWidget with GetItStatefulWidgetMixin {
@@ -81,7 +91,7 @@ class _DataEntryState extends State<DataEntry> with GetItStateMixin {
 
                   var relitaveposx = details.localPosition.dx / width;
                   var relitaveposy =
-                      details.localPosition.dy / (width * (16/9));
+                      details.localPosition.dy / (width * (16 / 9));
 
                   print(relitaveposy);
 
@@ -111,6 +121,8 @@ class _DataEntryState extends State<DataEntry> with GetItStateMixin {
                   child: Image.asset(
                     "assets/basket_c.png",
                     fit: BoxFit.scaleDown,
+                    color: chort,
+                    colorBlendMode: BlendMode.srcIn,
                   )),
             ),
             ...DataPointsInstance.points.map((point) {
@@ -120,7 +132,7 @@ class _DataEntryState extends State<DataEntry> with GetItStateMixin {
 
                 return Positioned(
                     left: point.posx * width,
-                    top: point.posy * (width * (16/9)),
+                    top: point.posy * (width * (16 / 9)),
                     child: Tooltip(
                       message: "Player $x",
                       child: Container(
@@ -150,7 +162,7 @@ class _DataEntryState extends State<DataEntry> with GetItStateMixin {
 
               return Positioned(
                 left: point.posx * width,
-                top: point.posy * (width * (16/9)),
+                top: point.posy * (width * (16 / 9)),
                 child: Container(
                   width: 15,
                   height: 15,

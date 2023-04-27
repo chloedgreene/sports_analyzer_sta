@@ -1,10 +1,14 @@
+import 'dart:io';
+
 import 'package:device_preview/device_preview.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:numberpicker/numberpicker.dart';
 import 'package:sports_analyzer_sta/data_entry.dart';
+import 'package:sports_analyzer_sta/send_and_share.dart';
 import 'package:sports_analyzer_sta/stats.dart';
 import 'package:get_it/get_it.dart';
+import 'package:qr_flutter/qr_flutter.dart';
 
 
 //We use getit to make singletons actually usable and clean in flutter
@@ -54,7 +58,7 @@ void main() {
 
   runApp(
     DevicePreview(
-      enabled: !kReleaseMode,
+      enabled: Platform.isLinux, //Disable on android and ios devices
       builder: (context) => const SportsAnalyzerSta(), // Wrap your app
     ),
   );
@@ -111,7 +115,7 @@ class _HomePageState extends State<HomePage> {
 
   int _selectedValue = 0;
 
-  static final List<Widget> _HomeScreens = <Widget>[DataEntry(), Stats()];
+  static final List<Widget> _HomeScreens = <Widget>[DataEntry(), Stats(),SendAndShare()];
 
   var GlobalDataInstance = GetIt.I.get<GlobalData>();
 
@@ -141,15 +145,11 @@ class _HomePageState extends State<HomePage> {
                       setState(() {
                         _selectedValue = value;
                         GlobalDataInstance.selectedPlayer = _selectedValue;
-                        rebuildAllChildren(context);
                       });
                       SBsetState((){
                         _selectedValue = value;
                         GlobalDataInstance.selectedPlayer = _selectedValue;
-                        rebuildAllChildren(context);
                       });
-
-                      rebuildAllChildren(context);
                     },
                   );
                 }
@@ -161,7 +161,6 @@ class _HomePageState extends State<HomePage> {
                 onPressed: () {
                   setState(() {
                     GlobalDataInstance.selectedPlayer = _selectedValue;
-                    rebuildAllChildren(context);
                   });
                   Navigator.of(context).pop();
                 },
@@ -193,6 +192,10 @@ class _HomePageState extends State<HomePage> {
             BottomNavigationBarItem(
               icon: Icon(Icons.graphic_eq),
               label: 'Stats',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.send_to_mobile),
+              label: 'Send & Get' //TODO: put better text here
             )
           ],
           currentIndex: _selectedIndex,

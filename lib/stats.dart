@@ -3,6 +3,7 @@
 
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:get_it_mixin/get_it_mixin.dart';
 import 'package:sports_analyzer_sta/data_entry.dart';
 
@@ -11,6 +12,15 @@ import 'main.dart';
 class Stats extends StatelessWidget with GetItMixin {
   // ignore: non_constant_identifier_names
   Widget chort_diagram(List<Point> playerPoints) {
+
+    var brightness =
+    SchedulerBinding.instance.platformDispatcher.platformBrightness;
+    bool isDarkMode = brightness == Brightness.dark;
+    Color chort = Colors.black;
+    if (isDarkMode) {
+      chort = Colors.white;
+    }
+
     return LayoutBuilder(builder: (context, constsains) {
       return Stack(
         children: [
@@ -19,6 +29,8 @@ class Stats extends StatelessWidget with GetItMixin {
               child: Image.asset(
                 "assets/basket_c.png",
                 fit: BoxFit.scaleDown,
+                color: chort,
+                colorBlendMode: BlendMode.srcIn,
               )),
           ...playerPoints.map((point) {
             Color dot_colour = Colors.black;

@@ -177,10 +177,30 @@ class _SendAndShare extends State<SendAndShare> with GetItStateMixin {
 
                   if ((barcode.rawValue ?? "[]").contains("https")) {
                     var code_blocks = barcode.rawValue!.split('/');
-                    var code = code_blocks[code_blocks.length-1];
+                    var code = code_blocks[code_blocks.length - 1];
 
-                    ScaffoldMessenger.of(context)
-                        .showSnackBar(SnackBar(content: Text("Code: $code}")));
+                    ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text("Stat Code: $code}")));
+
+                    var raw_url = "https://pastebin.com/raw/$code";
+                    var response =
+                      http.get(Uri.parse(raw_url)).then((value) {
+                        var DataPointsInstance = GetIt.I.get<DataPoints>();
+                      
+                       List<dynamic> data_poits_json_list = jsonDecode(value.body);
+ 
+ 
+                       data_poits_json_list.forEach((var thingt) {
+                         DataPointsInstance.points.add(Point.fromJson(thingt));
+                       });
+     
+                       setState(() {
+                         _scanOfflineMode = false;
+                       });
+                      
+                      
+                      });
+
                   }
 
                   final decodeBase64Json =

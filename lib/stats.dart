@@ -120,10 +120,7 @@ class Stats extends StatelessWidget with GetItMixin {
               Divider()
             ],
           ),
-          chort_diagram(_playerPoints),
-          Placeholder(),
-          Placeholder(),
-          Placeholder()
+          chort_diagram(_playerPoints)
         ],
       ),
     );

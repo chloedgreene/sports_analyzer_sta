@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
 
+import 'package:file_saver/file_saver.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:get_it/get_it.dart';
@@ -261,6 +262,15 @@ class _SendAndShare extends State<SendAndShare> with GetItStateMixin {
           },
           icon: const Icon(Icons.file_present),
           label: const Text("Upload To PasteBin"),
+        ),
+        TextButton.icon(
+          onPressed: () async {
+            await FileSaver.instance.saveFile(
+              name: "Json Dump"
+            );
+          },
+          icon: const Icon(Icons.save_as),
+          label: const Text("Save to Json"),
         ),
         // TextButton.icon(
         //   onPressed: () {

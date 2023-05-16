@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.sports_analyzer_sta">
    <application
-        android:label="sports_analyzer_sta"
+        android:label="Flames Sports Analyzer"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity

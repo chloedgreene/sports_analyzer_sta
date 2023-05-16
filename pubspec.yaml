@@ -41,6 +41,7 @@ dependencies:
   mobile_scanner: ^3.2.0
   lzstring: ^2.0.0+2
   pastebin: ^1.0.1
+  file_saver: ^0.2.1
 
 dev_dependencies:
   flutter_test:

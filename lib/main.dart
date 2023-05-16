@@ -1,3 +1,4 @@
+import 'dart:ffi';
 import 'dart:io';
 
 import 'package:device_preview/device_preview.dart';
@@ -10,9 +11,10 @@ import 'package:sports_analyzer_sta/stats.dart';
 import 'package:get_it/get_it.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 
-
 //We use getit to make singletons actually usable and clean in flutter
 final getIt = GetIt.instance;
+
+final flames_red = Color.fromRGBO(217, 35, 42, 1);
 
 //////////////////////////////////////////
 ///These two classes are singletons are are STATIC and MUTABLE
@@ -20,33 +22,31 @@ final getIt = GetIt.instance;
 ///mkay future me
 ///SINGLTONES, NOT OBJECTS
 
-class DataPoints extends ChangeNotifier{
+class DataPoints extends ChangeNotifier {
   List<Point> _points = [];
 
-  set points(List<Point> points){
+  set points(List<Point> points) {
     _points = points;
     notifyListeners();
   }
 
   List<Point> get points => _points;
-
 }
-class GlobalData extends ChangeNotifier{
+
+class GlobalData extends ChangeNotifier {
   int _selectedPlayer = 0;
 
-  set selectedPlayer(int player){
+  set selectedPlayer(int player) {
     _selectedPlayer = player;
     notifyListeners();
   }
 
   int get selectedPlayer => _selectedPlayer;
-
 }
 
 //////////////////////////////////////////
 
 void main() {
-
   GetIt.I.registerSingleton<DataPoints>(
     DataPoints(),
   );
@@ -55,14 +55,12 @@ void main() {
     GlobalData(),
   );
 
-
   runApp(
     DevicePreview(
       enabled: Platform.isLinux, //Disable on android and ios devices
       builder: (context) => const SportsAnalyzerSta(), // Wrap your app
     ),
   );
-
 }
 
 // DevicePreview(
@@ -79,10 +77,12 @@ class SportsAnalyzerSta extends StatelessWidget {
     return MaterialApp(
       title: 'Flames Sports Analyzer',
       theme: ThemeData(
-        primarySwatch: Colors.blue,
+        
+        
         useMaterial3: true,
       ),
       darkTheme: ThemeData(
+        primarySwatch: Colors.red,
         brightness: Brightness.dark,
         useMaterial3: true,
       ),
@@ -115,46 +115,46 @@ class _HomePageState extends State<HomePage> {
 
   int _selectedValue = 0;
 
-  static final List<Widget> _HomeScreens = <Widget>[DataEntry(), Stats(),SendAndShare()];
+  static final List<Widget> _HomeScreens = <Widget>[
+    DataEntry(),
+    Stats(),
+    SendAndShare()
+  ];
 
   var GlobalDataInstance = GetIt.I.get<GlobalData>();
-
 
   void rebuildAllChildren(BuildContext context) {
     void rebuild(Element el) {
       el.markNeedsBuild();
       el.visitChildren(rebuild);
     }
+
     (context as Element).visitChildren(rebuild);
   }
 
   void pickValue(BuildContext context) {
-
     showDialog<int>(
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
             title: Text("Player Number"),
-            content:StatefulBuilder(
-                builder: (context, SBsetState) {
-                  return NumberPicker(
-                    value: _selectedValue,
-                    minValue: 0,
-                    maxValue: 99,
-                    onChanged: (value) {
-                      setState(() {
-                        _selectedValue = value;
-                        GlobalDataInstance.selectedPlayer = _selectedValue;
-                      });
-                      SBsetState((){
-                        _selectedValue = value;
-                        GlobalDataInstance.selectedPlayer = _selectedValue;
-                      });
-                    },
-                  );
-                }
-            ),
-
+            content: StatefulBuilder(builder: (context, SBsetState) {
+              return NumberPicker(
+                value: _selectedValue,
+                minValue: 0,
+                maxValue: 99,
+                onChanged: (value) {
+                  setState(() {
+                    _selectedValue = value;
+                    GlobalDataInstance.selectedPlayer = _selectedValue;
+                  });
+                  SBsetState(() {
+                    _selectedValue = value;
+                    GlobalDataInstance.selectedPlayer = _selectedValue;
+                  });
+                },
+              );
+            }),
             actions: [
               TextButton(
                 child: const Text("OK"),
@@ -194,12 +194,12 @@ class _HomePageState extends State<HomePage> {
               label: 'Stats',
             ),
             BottomNavigationBarItem(
-              icon: Icon(Icons.send_to_mobile),
-              label: 'Send & Get' //TODO: put better text here
-            )
+                icon: Icon(Icons.send_to_mobile),
+                label: 'Send & Get' //TODO: put better text here
+                )
           ],
           currentIndex: _selectedIndex,
-          selectedItemColor: Colors.amber[800],
+          selectedItemColor: flames_red,
           onTap: _onItemTapped,
         ),
         floatingActionButton: FloatingActionButton.extended(
@@ -208,7 +208,7 @@ class _HomePageState extends State<HomePage> {
           },
           icon: const Icon(Icons.numbers),
           label: Text("$_selectedValue"),
+          backgroundColor: flames_red,
         ));
   }
 }
- 

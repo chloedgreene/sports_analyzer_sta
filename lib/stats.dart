@@ -12,9 +12,8 @@ import 'main.dart';
 class Stats extends StatelessWidget with GetItMixin {
   // ignore: non_constant_identifier_names
   Widget chort_diagram(List<Point> playerPoints) {
-
     var brightness =
-    SchedulerBinding.instance.platformDispatcher.platformBrightness;
+        SchedulerBinding.instance.platformDispatcher.platformBrightness;
     bool isDarkMode = brightness == Brightness.dark;
     Color chort = Colors.black;
     if (isDarkMode) {
@@ -49,7 +48,7 @@ class Stats extends StatelessWidget with GetItMixin {
 
             return Positioned(
               left: point.posx * constsains.maxWidth,
-              top: point.posy * (constsains.maxWidth * (16/9)),
+              top: point.posy * (constsains.maxWidth * (16 / 9)),
               child: Container(
                 width: 15,
                 height: 15,
@@ -88,6 +87,8 @@ class Stats extends StatelessWidget with GetItMixin {
         .length
         .toDouble();
 
+    final _ratio_to_score_to_miss = (_totalbasckets / _totalmiss)*10; //get percentage
+
     if (_totalPoints < 12) {
       // 12 points give enought data to start building a model
       return Center(
@@ -105,8 +106,6 @@ class Stats extends StatelessWidget with GetItMixin {
       );
     }
 
-
-
     return Center(
       child: ListView(
         children: [
@@ -120,7 +119,37 @@ class Stats extends StatelessWidget with GetItMixin {
               Divider()
             ],
           ),
-          chort_diagram(_playerPoints)
+          chort_diagram(_playerPoints),
+          Divider(),
+          Column(
+            children: [
+              const Text(
+                "Stats:",
+                style: const TextStyle(fontSize: 28),
+              ),
+              Text("Total Count: ${_playerPoints.length}",
+                  style: const TextStyle(fontSize: 18)),
+              //We need layout building because we need a limited size for it
+              LayoutBuilder(builder: (builder, context) {
+                return SizedBox(
+                  width: context.maxWidth,
+                  height: context.maxWidth,
+                  child: PieChart(
+                    PieChartData(sections: [
+                      PieChartSectionData(value:  _totalPoints / _totalbasckets, color: Colors.green),
+                      PieChartSectionData(value:  _totalPoints / _totalmiss, color: Colors.red),
+                      PieChartSectionData(value:  _totalPoints / _totalfouls, color: Colors.yellow),
+                    ]),
+                    swapAnimationDuration:
+                        Duration(milliseconds: 150), // Optional
+                    swapAnimationCurve: Curves.linear, // Optional
+                  ),
+                );
+              }),
+              Text("Sucessfuull Score Percenentage: $_ratio_to_score_to_miss", // learn how to spell later
+                  style: const TextStyle(fontSize: 18)),
+            ],
+          )
         ],
       ),
     );

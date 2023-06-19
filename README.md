@@ -1,21 +1,11 @@
-# Flames sport analyzer
+# Flames Sports Analyzer
 
-A Sports analyzer for coach's for highschool teams
+The Flames Sports Analyzer is a mobile application designed to enable coaches to input data and generate heatmaps, scoremaps, and statistics for individual games or players.
 
-# Getting Started
+## Install
 
-## If you want to use the app
+### Android:
+Android apps can easyilybe installed from the releases panel on the side and sideload a apk, we plan on getting f-droid/google play store intergration so the app can auto-update and have more intuiative install prosess
 
-Goto the releases page and download the latest file
-(APK files are for android, IPA is for macos/IOS devices)
-
-## If you want to develop
-
-Download the flutter sdk for your platform and use your ide's built in tools to auto-configure your app
-
-### Building the app
-
-Because the app used DevicePreview, you need to build using a release profile for phones
-
-# ScreenShots
-![title](snapshots/example_data.png)
+### IOS:
+IOS is currently not supported, but should be possible to auto-build in the future

@@ -9,3 +9,6 @@ Android apps can easyilybe installed from the releases panel on the side and sid
 
 ### IOS:
 IOS is currently not supported, but should be possible to auto-build in the future
+
+## ScreenShots
+![Example Data Plot](snapshots/example_data.png)

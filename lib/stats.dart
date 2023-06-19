@@ -10,6 +10,8 @@ import 'package:sports_analyzer_sta/data_entry.dart';
 import 'main.dart';
 
 class Stats extends StatelessWidget with GetItMixin {
+  Stats({super.key});
+
   // ignore: non_constant_identifier_names
   Widget chort_diagram(List<Point> playerPoints) {
     var brightness =
@@ -32,17 +34,17 @@ class Stats extends StatelessWidget with GetItMixin {
                 colorBlendMode: BlendMode.srcIn,
               )),
           ...playerPoints.map((point) {
-            Color dot_colour = Colors.black;
+            Color dotColour = Colors.black;
 
             switch (point.type) {
               case DataPointType.Basket:
-                dot_colour = Colors.green;
+                dotColour = Colors.green;
                 break;
               case DataPointType.Foul:
-                dot_colour = Colors.yellow;
+                dotColour = Colors.yellow;
                 break;
               case DataPointType.Miss:
-                dot_colour = Colors.red;
+                dotColour = Colors.red;
                 break;
             }
 
@@ -53,7 +55,7 @@ class Stats extends StatelessWidget with GetItMixin {
                 width: 15,
                 height: 15,
                 decoration: BoxDecoration(
-                  color: dot_colour,
+                  color: dotColour,
                   shape: BoxShape.circle,
                 ),
               ),
@@ -71,25 +73,25 @@ class Stats extends StatelessWidget with GetItMixin {
     final points = watchOnly((DataPoints dp) => dp.points);
     final player = watchOnly((GlobalData gd) => gd.selectedPlayer);
 
-    final _playerPoints = points.where((i) => i.player == player).toList();
+    final playerPoints = points.where((i) => i.player == player).toList();
 
-    final _totalPoints = _playerPoints.length;
-    final _totalfouls = _playerPoints
+    final totalPoints = playerPoints.length;
+    final totalfouls = playerPoints
         .where((p) => p.type == DataPointType.Foul)
         .length
         .toDouble();
-    final _totalmiss = _playerPoints
+    final totalmiss = playerPoints
         .where((p) => p.type == DataPointType.Miss)
         .length
         .toDouble();
-    final _totalbasckets = _playerPoints
+    final totalbasckets = playerPoints
         .where((p) => p.type == DataPointType.Foul)
         .length
         .toDouble();
 
-    final _ratio_to_score_to_miss = (_totalbasckets / _totalmiss)*10; //get percentage
+    final ratioToScoreToMiss = (totalbasckets / totalmiss)*10; //get percentage
 
-    if (_totalPoints < 12) {
+    if (totalPoints < 12) {
       // 12 points give enought data to start building a model
       return Center(
         child: Column(
@@ -116,18 +118,18 @@ class Stats extends StatelessWidget with GetItMixin {
                 "Data for player: $player",
                 style: const TextStyle(fontSize: 38),
               ),
-              Divider()
+              const Divider()
             ],
           ),
-          chort_diagram(_playerPoints),
-          Divider(),
+          chort_diagram(playerPoints),
+          const Divider(),
           Column(
             children: [
               const Text(
                 "Stats:",
-                style: const TextStyle(fontSize: 28),
+                style: TextStyle(fontSize: 28),
               ),
-              Text("Total Count: ${_playerPoints.length}",
+              Text("Total Count: ${playerPoints.length}",
                   style: const TextStyle(fontSize: 18)),
               //We need layout building because we need a limited size for it
               LayoutBuilder(builder: (builder, context) {
@@ -136,17 +138,17 @@ class Stats extends StatelessWidget with GetItMixin {
                   height: context.maxWidth,
                   child: PieChart(
                     PieChartData(sections: [
-                      PieChartSectionData(value:  _totalPoints / _totalbasckets, color: Colors.green),
-                      PieChartSectionData(value:  _totalPoints / _totalmiss, color: Colors.red),
-                      PieChartSectionData(value:  _totalPoints / _totalfouls, color: Colors.yellow),
+                      PieChartSectionData(value:  totalPoints / totalbasckets, color: Colors.green),
+                      PieChartSectionData(value:  totalPoints / totalmiss, color: Colors.red),
+                      PieChartSectionData(value:  totalPoints / totalfouls, color: Colors.yellow),
                     ]),
                     swapAnimationDuration:
-                        Duration(milliseconds: 150), // Optional
+                        const Duration(milliseconds: 150), // Optional
                     swapAnimationCurve: Curves.linear, // Optional
                   ),
                 );
               }),
-              Text("Sucessfuull Score Percenentage: $_ratio_to_score_to_miss", // learn how to spell later
+              Text("Sucessfuull Score Percenentage: $ratioToScoreToMiss", // learn how to spell later
                   style: const TextStyle(fontSize: 18)),
             ],
           )

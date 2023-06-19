@@ -1,20 +1,17 @@
-import 'dart:ffi';
 import 'dart:io';
 
 import 'package:device_preview/device_preview.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:numberpicker/numberpicker.dart';
 import 'package:sports_analyzer_sta/data_entry.dart';
 import 'package:sports_analyzer_sta/send_and_share.dart';
 import 'package:sports_analyzer_sta/stats.dart';
 import 'package:get_it/get_it.dart';
-import 'package:qr_flutter/qr_flutter.dart';
 
 //We use getit to make singletons actually usable and clean in flutter
 final getIt = GetIt.instance;
 
-final flames_red = Color.fromRGBO(217, 35, 42, 1);
+const flames_red = Color.fromRGBO(217, 35, 42, 1);
 
 //////////////////////////////////////////
 ///These two classes are singletons are are STATIC and MUTABLE
@@ -137,7 +134,7 @@ class _HomePageState extends State<HomePage> {
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
-            title: Text("Player Number"),
+            title: const Text("Player Number"),
             content: StatefulBuilder(builder: (context, SBsetState) {
               return NumberPicker(
                 value: _selectedValue,

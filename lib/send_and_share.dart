@@ -1,17 +1,16 @@
 import 'dart:convert';
+
 import 'dart:io';
 import 'dart:typed_data';
 
-import 'package:file_saver/file_saver.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:get_it/get_it.dart';
 import 'package:get_it_mixin/get_it_mixin.dart';
-import 'package:lzstring/lzstring.dart';
 import 'package:http/http.dart' as http;
-import 'package:pastebin/pastebin.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:sports_analyzer_sta/data_entry.dart';
+import 'package:flutter/services.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import 'main.dart';
 
@@ -42,8 +41,8 @@ class _SendAndShare extends State<SendAndShare> with GetItStateMixin {
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
-            title: Text("Scan To Share Data"),
-            content: Container(
+            title: const Text("Scan To Share Data"),
+            content: SizedBox(
               width: 500,
               height: 500,
               child: QrImage(
@@ -94,8 +93,8 @@ class _SendAndShare extends State<SendAndShare> with GetItStateMixin {
             context: context,
             builder: (BuildContext context) {
               return AlertDialog(
-                title: Text("Scan To Pastebin"),
-                content: Container(
+                title: const Text("Scan To Pastebin"),
+                content: SizedBox(
                   width: 500,
                   height: 500,
                   child: QrImage(
@@ -128,8 +127,8 @@ class _SendAndShare extends State<SendAndShare> with GetItStateMixin {
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
-            title: Text("Scan To Pastebin"),
-            content: Container(
+            title: const Text("Scan To Pastebin"),
+            content: SizedBox(
               width: 500,
               height: 500,
               child: QrImage(
@@ -174,48 +173,44 @@ class _SendAndShare extends State<SendAndShare> with GetItStateMixin {
                 final List<Barcode> barcodes = capture.barcodes;
                 final Uint8List? image = capture.image;
                 for (final barcode in barcodes) {
-                  print('Barcode found! ${barcode.rawValue}');
+                  //print('Barcode found! ${barcode.rawValue}');
 
                   if ((barcode.rawValue ?? "[]").contains("https")) {
-                    var code_blocks = barcode.rawValue!.split('/');
-                    var code = code_blocks[code_blocks.length - 1];
+                    var codeBlocks = barcode.rawValue!.split('/');
+                    var code = codeBlocks[codeBlocks.length - 1];
 
                     ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(content: Text("Stat Code: $code}")));
 
-                    var raw_url = "https://pastebin.com/raw/$code";
-                    var response =
-                      http.get(Uri.parse(raw_url)).then((value) {
-                        var DataPointsInstance = GetIt.I.get<DataPoints>();
-                      
-                       List<dynamic> data_poits_json_list = jsonDecode(value.body);
- 
- 
-                       data_poits_json_list.forEach((var thingt) {
-                         DataPointsInstance.points.add(Point.fromJson(thingt));
-                       });
-     
-                       setState(() {
-                         _scanOfflineMode = false;
-                       });
-                      
-                      
-                      });
+                    var rawUrl = "https://pastebin.com/raw/$code";
+                    var response = http.get(Uri.parse(rawUrl)).then((value) {
+                      var DataPointsInstance = GetIt.I.get<DataPoints>();
 
+                      List<dynamic> dataPoitsJsonList = jsonDecode(value.body);
+
+                      for (var thingt in dataPoitsJsonList) {
+                        DataPointsInstance.points.add(Point.fromJson(thingt));
+                      }
+
+                      setState(() {
+                        _scanOfflineMode = false;
+                      });
+                    });
                   }
 
                   final decodeBase64Json =
                       base64.decode(barcode.rawValue ?? "[]");
+
                   final decodegZipJson = gzip.decode(decodeBase64Json);
                   final originalJson = utf8.decode(decodegZipJson);
 
                   var DataPointsInstance = GetIt.I.get<DataPoints>();
 
-                  List<dynamic> data_poits_json_list = jsonDecode(originalJson);
+                  List<dynamic> dataPoitsJsonList = jsonDecode(originalJson);
 
-                  data_poits_json_list.forEach((var thingt) {
+                  for (var thingt in dataPoitsJsonList) {
                     DataPointsInstance.points.add(Point.fromJson(thingt));
-                  });
+                  }
 
                   setState(() {
                     _scanOfflineMode = false;
@@ -232,11 +227,11 @@ class _SendAndShare extends State<SendAndShare> with GetItStateMixin {
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        Column(
-          children: const [
+        const Column(
+          children: [
             Text(
               "Send and Share Data",
-              style: const TextStyle(fontSize: 28),
+              style: TextStyle(fontSize: 28),
             ),
             Divider()
           ],
@@ -265,13 +260,13 @@ class _SendAndShare extends State<SendAndShare> with GetItStateMixin {
         ),
         TextButton.icon(
           onPressed: () async {
-            await FileSaver.instance.saveFile(
-              name: "Json Dump"
-            );
+            var g = jsonEncode(dataPoints);
+            await Clipboard.setData(ClipboardData(text: g));
           },
           icon: const Icon(Icons.save_as),
-          label: const Text("Save to Json"),
+          label: const Text("Save to ClipBoard"),
         ),
+
         // TextButton.icon(
         //   onPressed: () {
         //     showDialog(
@@ -284,7 +279,7 @@ class _SendAndShare extends State<SendAndShare> with GetItStateMixin {
         //   icon: const Icon(Icons.import_export),
         //   label: const Text("Import file"),
         // )
-        Divider(),
+        const Divider(),
         TextButton.icon(
           //Download to QR
           onPressed: () {
@@ -301,11 +296,28 @@ class _SendAndShare extends State<SendAndShare> with GetItStateMixin {
                   barrierDismissible: true);
             } else {
               ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text("Does not support Webcam")));
+                  const SnackBar(content: Text("Does not support Webcam, Use The Clipboard feature and send it, ALSO HI MR MAC"))); // HI MR MACC
             }
           },
           icon: const Icon(Icons.qr_code_scanner),
           label: const Text("Scan QR code"),
+        ),
+        TextButton.icon(
+          onPressed: () async {
+            //var g = jsonEncode(dataPoints);
+            var g = await Clipboard.getData("text/plain");
+
+            var p = g?.text ?? "{}"; // null check
+
+            var DataPointsInstance = GetIt.I.get<DataPoints>();
+            List<dynamic> dataPoitsJsonList = jsonDecode(p as String);
+            for (var point_from_json in dataPoitsJsonList) {
+              DataPointsInstance.points.add(Point.fromJson(point_from_json));
+            }
+
+          },
+          icon: const Icon(Icons.save_as),
+          label: const Text("Import From Clipboard"),
         ),
       ],
     );

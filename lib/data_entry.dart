@@ -34,6 +34,8 @@ class Point {
 }
 
 class DataEntry extends StatefulWidget with GetItStatefulWidgetMixin {
+  DataEntry({super.key});
+
   //const DataEntry({super.key});
 
   @override
@@ -72,7 +74,7 @@ class _DataEntryState extends State<DataEntry> with GetItStateMixin {
     var GlobalDataInstance = GetIt.I.get<GlobalData>();
     var DataPointsInstance = GetIt.I.get<DataPoints>();
 
-    int player_number = watchOnly((GlobalData gd) => gd.selectedPlayer);
+    int playerNumber = watchOnly((GlobalData gd) => gd.selectedPlayer);
     //Add points to a list so they can be drawn
     return Center(
         child: ListView(children: [
@@ -93,27 +95,27 @@ class _DataEntryState extends State<DataEntry> with GetItStateMixin {
                   var relitaveposy =
                       details.localPosition.dy / (width * (16 / 9));
 
-                  print(relitaveposy);
+                  //print(relitaveposy);
 
-                  DataPointType point_type = DataPointType.Miss;
+                  DataPointType pointType = DataPointType.Miss;
 
                   //Score Count up
                   if (_selected.elementAt(0)) {
-                    point_type = DataPointType.Basket;
+                    pointType = DataPointType.Basket;
                   }
 
                   //Pass
                   if (_selected.elementAt(1)) {
-                    point_type = DataPointType.Foul;
+                    pointType = DataPointType.Foul;
                   }
 
                   //Miss
                   if (_selected.elementAt(2)) {
-                    point_type = DataPointType.Miss;
+                    pointType = DataPointType.Miss;
                   }
 
                   DataPointsInstance.points.add(Point(
-                      relitaveposx, relitaveposy, point_type, player_number));
+                      relitaveposx, relitaveposy, pointType, playerNumber));
                 });
               },
               child: AspectRatio(
@@ -127,7 +129,7 @@ class _DataEntryState extends State<DataEntry> with GetItStateMixin {
             ),
             ...DataPointsInstance.points.map((point) {
               //grwy out points and make then small
-              if (point.player != player_number) {
+              if (point.player != playerNumber) {
                 var x = point.player;
 
                 return Positioned(
@@ -146,17 +148,17 @@ class _DataEntryState extends State<DataEntry> with GetItStateMixin {
                     ));
               }
 
-              Color dot_colour = Colors.black;
+              Color dotColour = Colors.black;
 
               switch (point.type) {
                 case DataPointType.Basket:
-                  dot_colour = Colors.green;
+                  dotColour = Colors.green;
                   break;
                 case DataPointType.Foul:
-                  dot_colour = Colors.yellow;
+                  dotColour = Colors.yellow;
                   break;
                 case DataPointType.Miss:
-                  dot_colour = Colors.red;
+                  dotColour = Colors.red;
                   break;
               }
 
@@ -167,7 +169,7 @@ class _DataEntryState extends State<DataEntry> with GetItStateMixin {
                   width: 15,
                   height: 15,
                   decoration: BoxDecoration(
-                    color: dot_colour,
+                    color: dotColour,
                     shape: BoxShape.circle,
                   ),
                 ),

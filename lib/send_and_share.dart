@@ -225,7 +225,7 @@ class _SendAndShare extends State<SendAndShare> with GetItStateMixin {
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        const Column(
+        Column(
           children: [
             Text(
               "Send and Share Data",

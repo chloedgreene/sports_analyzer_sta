@@ -21,16 +21,23 @@ class Point {
   int player;
 
   Map<String, dynamic> toJson() =>
-      {'pos_x': posx, 'pos_y': posy, 'type': type.toString(), 'player': player};
+      {'pos_x': posx, 'pos_y': posy, 'type': type.toString(), 'player': player}; // move this into a json format, so it can easyer be send over network/local
 
   Point(this.posx, this.posy, this.type, this.player);
 
+
+  /// this is fucking black magic, idk hwo it works
+  /// i wrote it at 3 am
+  /// pleace dont try to understand it
+  /// it dosent make sence
+  /// just
+  /// god save your soul if you try to undersant this
   Point.fromJson(Map<String, dynamic> json)
       : posy = json['pos_y'],
         posx = json['pos_x'],
         type = DataPointType.values
             .byName(json['type'].toString().split('.').elementAt(1)),
-        player = json['player'];
+        player = json['player'];                   
 }
 
 class DataEntry extends StatefulWidget with GetItStatefulWidgetMixin {
@@ -115,7 +122,7 @@ class _DataEntryState extends State<DataEntry> with GetItStateMixin {
                   }
 
                   DataPointsInstance.points.add(Point(
-                      relitaveposx, relitaveposy, pointType, playerNumber));
+                      relitaveposx, relitaveposy, pointType, playerNumber)); // add point to the database
                 });
               },
               child: AspectRatio(

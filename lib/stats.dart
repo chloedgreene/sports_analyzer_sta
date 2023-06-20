@@ -1,6 +1,10 @@
 //This file has all the source code for the "add data" section of the app
 //i mean most, not all code
 
+
+//change
+//THIS has the stats object for the project, some of the code could be put into functions,
+
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';

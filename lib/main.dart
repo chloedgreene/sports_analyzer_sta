@@ -11,20 +11,26 @@ import 'package:get_it/get_it.dart';
 //We use getit to make singletons actually usable and clean in flutter
 final getIt = GetIt.instance;
 
-const flames_red = Color.fromRGBO(217, 35, 42, 1);
+const flames_red = Color(0xffd9232a);
 
-//////////////////////////////////////////
+///////////////////////////////////////////////////////////////
 ///These two classes are singletons are are STATIC and MUTABLE
 ///These have SHARED DATA and are N O T objects(in a oop sence)
 ///mkay future me
 ///SINGLTONES, NOT OBJECTS
+///AHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHh
+///Y O U N E E D T O R E M E M B E R
+///singletons are d i f f e r e n t
+///i am so sorry for ranting anybody seeing this code
+///you jut need to r e m e m b e r 
+///mkay
 
 class DataPoints extends ChangeNotifier {
   List<Point> _points = [];
 
   set points(List<Point> points) {
     _points = points;
-    notifyListeners();
+    notifyListeners(); // uses the GetIt function to notifi all child widgets to re-build
   }
 
   List<Point> get points => _points;
@@ -38,7 +44,7 @@ class GlobalData extends ChangeNotifier {
     notifyListeners();
   }
 
-  int get selectedPlayer => _selectedPlayer;
+  int get selectedPlayer => _selectedPlayer; //allows the selected player to remain the same cross-widget
 }
 
 //////////////////////////////////////////
@@ -75,13 +81,21 @@ class SportsAnalyzerSta extends StatelessWidget {
       title: 'Flames Sports Analyzer',
       theme: ThemeData(
         
-        
+        brightness: Brightness.light,
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: flames_red,
+          brightness: Brightness.light
+        ),
         useMaterial3: true,
       ),
       darkTheme: ThemeData(
-        primarySwatch: Colors.red,
+        //primarySwatch: Colors.red,
         brightness: Brightness.dark,
         useMaterial3: true,
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: flames_red,
+          brightness: Brightness.dark
+          )
       ),
       themeMode: ThemeMode.system,
       home: const HomePage(title: 'Flames Sports Analyzer'),
@@ -92,14 +106,9 @@ class SportsAnalyzerSta extends StatelessWidget {
 class HomePage extends StatefulWidget {
   const HomePage({super.key, required this.title});
 
-  // This widget is the home page of your application. It is stateful, meaning
-  // that it has a State object (defined below) that contains fields that affect
-  // how it looks.
-
-  // This class is the configuration for the state. It holds the values (in this
-  // case the title) provided by the parent (in this case the App widget) and
-  // used by the build method of the State. Fields in a Widget subclass are
-  // always marked "final".
+  // This widget is the home page of your application. It is stateful, i cant prevent statful
+  //i wish for stateless, but yk, l a z y
+  // and it makes the coding so much easyer
 
   final String title;
 

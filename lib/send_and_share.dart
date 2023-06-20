@@ -1,7 +1,6 @@
 import 'dart:convert';
 
 import 'dart:io';
-import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
@@ -23,15 +22,14 @@ class SendAndShare extends StatefulWidget with GetItStatefulWidgetMixin {
 
 class _SendAndShare extends State<SendAndShare> with GetItStateMixin {
   bool _scanOfflineMode = false;
-  //TODO: use compression or setup a pastebin thingy
   void uploadOfflineQr(List<Point> dataPoints) {
     var brightness =
         SchedulerBinding.instance.platformDispatcher.platformBrightness;
     bool isDarkMode = brightness == Brightness.dark;
-    Color chort = Colors.black;
-    if (isDarkMode) {
-      chort = Colors.white;
-    }
+    //Color chort = Colors.black;
+    //if (isDarkMode) {
+    //  chort = Colors.white;
+    //}
 
     var g = utf8.encode(jsonEncode(dataPoints));
     final gZipJson = gzip.encode(g);
@@ -67,13 +65,13 @@ class _SendAndShare extends State<SendAndShare> with GetItStateMixin {
   }
 
   void uploadPastebinQr(List<Point> dataPoints) {
-    var brightness =
-        SchedulerBinding.instance.platformDispatcher.platformBrightness;
-    bool isDarkMode = brightness == Brightness.dark;
-    Color chort = Colors.black;
-    if (isDarkMode) {
-      chort = Colors.white;
-    }
+    //var brightness =
+    //    SchedulerBinding.instance.platformDispatcher.platformBrightness;
+    //bool isDarkMode = brightness == Brightness.dark;
+    //Color chort = Colors.black;
+    //if (isDarkMode) {
+    //  chort = Colors.white;
+    //}
 
     var g = jsonEncode(dataPoints);
 
@@ -171,7 +169,7 @@ class _SendAndShare extends State<SendAndShare> with GetItStateMixin {
               ),
               onDetect: (capture) {
                 final List<Barcode> barcodes = capture.barcodes;
-                final Uint8List? image = capture.image;
+                //final Uint8List? image = capture.image;
                 for (final barcode in barcodes) {
                   //print('Barcode found! ${barcode.rawValue}');
 
@@ -183,7 +181,7 @@ class _SendAndShare extends State<SendAndShare> with GetItStateMixin {
                         SnackBar(content: Text("Stat Code: $code}")));
 
                     var rawUrl = "https://pastebin.com/raw/$code";
-                    var response = http.get(Uri.parse(rawUrl)).then((value) {
+                    http.get(Uri.parse(rawUrl)).then((value) {
                       var DataPointsInstance = GetIt.I.get<DataPoints>();
 
                       List<dynamic> dataPoitsJsonList = jsonDecode(value.body);

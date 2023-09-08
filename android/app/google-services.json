@@ -7,9 +7,9 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:864215622075:android:e3330e9c3d733aae41249e",
+        "mobilesdk_app_id": "1:864215622075:android:cda65c73a990949f41249e",
         "android_client_info": {
-          "package_name": "com.example.sports_analyzer_sta"
+          "package_name": "greene.chloe.sta.analyzer.sports"
         }
       },
       "oauth_client": [
@@ -29,6 +29,13 @@
             {
               "client_id": "864215622075-lcak0pd32r8m8j1l9jkrm2i2n90vg5pn.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "864215622075-6p8flpdo1snescvjkeid5t7d9alagndj.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.sportsAnalyzerSta.RunnerTests"
+              }
             }
           ]
         }

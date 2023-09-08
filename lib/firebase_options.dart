@@ -45,17 +45,17 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions web = FirebaseOptions(
     apiKey: 'AIzaSyDkx7uONXLG8HJpZ9iRJjaYqWXbZnix4n4',
-    appId: '1:864215622075:web:208487b0af0049da41249e',
+    appId: '1:864215622075:web:9e30bff08e94a5f841249e',
     messagingSenderId: '864215622075',
     projectId: 'sports-analyzer-sta',
     authDomain: 'sports-analyzer-sta.firebaseapp.com',
     storageBucket: 'sports-analyzer-sta.appspot.com',
-    measurementId: 'G-39860XG4VK',
+    measurementId: 'G-R79B553RM6',
   );
 
   static const FirebaseOptions android = FirebaseOptions(
     apiKey: 'AIzaSyCnAEC21G8PQym53u-UGR_Ng4qZPmCiyTI',
-    appId: '1:864215622075:android:e3330e9c3d733aae41249e',
+    appId: '1:864215622075:android:cda65c73a990949f41249e',
     messagingSenderId: '864215622075',
     projectId: 'sports-analyzer-sta',
     storageBucket: 'sports-analyzer-sta.appspot.com',
@@ -63,23 +63,21 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions ios = FirebaseOptions(
     apiKey: 'AIzaSyBj-kJAmuEwZOu4KI2um8UcAoP_Co1A7r0',
-    appId: '1:864215622075:ios:b8fe2cae428ce2ac41249e',
+    appId: '1:864215622075:ios:ad2137db60f3b8a641249e',
     messagingSenderId: '864215622075',
     projectId: 'sports-analyzer-sta',
     storageBucket: 'sports-analyzer-sta.appspot.com',
-    iosClientId:
-        '864215622075-h73bvhcadvvevnesuorpn7vl8ru2jj6q.apps.googleusercontent.com',
+    iosClientId: '864215622075-nlk9gg9upfhjs773ru9t7olb4e0144tk.apps.googleusercontent.com',
     iosBundleId: 'greene.chloe.STAAnalyzerSports',
   );
 
   static const FirebaseOptions macos = FirebaseOptions(
     apiKey: 'AIzaSyBj-kJAmuEwZOu4KI2um8UcAoP_Co1A7r0',
-    appId: '1:864215622075:ios:7dc2f5c2dc5b095641249e',
+    appId: '1:864215622075:ios:9ef49e96b7d0074b41249e',
     messagingSenderId: '864215622075',
     projectId: 'sports-analyzer-sta',
     storageBucket: 'sports-analyzer-sta.appspot.com',
-    iosClientId:
-        '864215622075-6p8flpdo1snescvjkeid5t7d9alagndj.apps.googleusercontent.com',
+    iosClientId: '864215622075-qltmh4i9ai3nqv204hv0hqb4m8klefnt.apps.googleusercontent.com',
     iosBundleId: 'greene.chloe.STAAnalyzerSports.RunnerTests',
   );
 }

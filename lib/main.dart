@@ -10,10 +10,8 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it_mixin/get_it_mixin.dart';
-import 'package:numberpicker/numberpicker.dart';
 import 'package:sports_analyzer_sta/data_entry.dart';
 import 'package:sports_analyzer_sta/game_page.dart';
-import 'package:sports_analyzer_sta/stats.dart';
 import 'package:get_it/get_it.dart';
 
 import 'firebase_options.dart';
@@ -36,13 +34,26 @@ const flames_red = Color(0xffd9232a);
 ///mkay
 ///
 
+class Game {
+  String title = "";
+  String subtitle = "";
+  int id = 0;
+  List<Point> points = [];
+
+  Game(String ttitle, String ssubtitle) {
+    title = ttitle;
+    subtitle = ssubtitle;
+  }
+}
+
 class DataPoints extends ChangeNotifier {
-  List<List<Point>> _points = [ [] ];
+  final List<Game> _points = [];
   int _selectedGame = 0;
-  int _game_count = 1;
 
   set points(List<Point> points) {
-    _points[_selectedGame] = points;
+    _points[_selectedGame].points = points;
+    //var db = FirebaseFirestore.instance;
+
     notifyListeners(); // uses the GetIt function to notifi all child widgets to re-build
   }
 
@@ -51,14 +62,13 @@ class DataPoints extends ChangeNotifier {
     notifyListeners(); // uses the GetIt function to notifi all child widgets to re-build
   }
 
-  set currentGameCount(int index) {
-    _game_count = index;
-    notifyListeners(); // uses the GetIt function to notifi all child widgets to re-build
+  int get_length() {
+    return _points.length;
   }
 
-  List<Point> get points => _points[_selectedGame];
+  List<Point> get points => _points[_selectedGame].points;
   int get currentGame => _selectedGame;
-  int get gameCount => _game_count;
+  Game get selectedGame => _points[_selectedGame];
 }
 
 class GlobalData extends ChangeNotifier {
@@ -136,6 +146,10 @@ class HomePage extends StatefulWidget with GetItStatefulWidgetMixin {
 class _HomePageState extends State<HomePage> {
   var GlobalDataInstance = GetIt.I.get<GlobalData>();
 
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  String title = "";
+  String subtitle = "";
+
   void rebuildAllChildren(BuildContext context) {
     void rebuild(Element el) {
       el.markNeedsBuild();
@@ -151,38 +165,112 @@ class _HomePageState extends State<HomePage> {
 
     return Scaffold(
         appBar: AppBar(
-          title: Text("Game select"),
+          title: const Text("Game select"),
         ),
         body: Center(
-            child: ListView.builder(
-                itemCount: DataPointsInstance._game_count,
-                itemBuilder: (bc, i) {
-                  if (i == 5) {
-                    return null;
-                  }
+          child: Builder(builder: (ctx) {
+            if (DataPointsInstance.get_length() == 0) {
+              return const Text(
+                  "No games found, please add one"); // wow i found so formal -_-
+            }
 
+            return ListView.builder(
+                itemCount: DataPointsInstance.get_length(),
+                itemBuilder: (bc, i) {
+                  DataPointsInstance.currentGame = i;
                   return Card(
                       child: InkWell(
                     onTap: () {
+                      DataPointsInstance.currentGame = i;
                       Navigator.of(context)
                           .push(MaterialPageRoute(builder: (context) {
-                        return GamePage(title: "Example game");
+                        return GamePage(title: DataPointsInstance.selectedGame.title);
                       }));
                     },
                     child: Column(
                       children: [
                         ListTile(
-                          title: Text("Semi-Finals"),
-                          subtitle: Text("Thris is just a example game"),
+                          title: Text(DataPointsInstance.selectedGame.title),
+                          subtitle:
+                              Text(DataPointsInstance.selectedGame.subtitle),
                         )
                       ],
                     ),
                   ));
-                })),
+                });
+          }),
+        ),
         floatingActionButton: FloatingActionButton.extended(
-          onPressed: () {},
+          onPressed: () {
+            showDialog(
+                context: context,
+                builder: (bc) {
+                  return Dialog.fullscreen(
+                    child: Scaffold(
+                        appBar: AppBar(
+                          title: const Text("New Game"),
+                        ),
+                        body: Form(
+                            key: _formKey,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                TextFormField(
+                                  decoration: const InputDecoration(
+                                    hintText: 'Game Title',
+                                  ),
+                                  validator: (String? value) {
+                                    if (value == null || value.isEmpty) {
+                                      return 'Please a title';
+                                    }
+                                    return null;
+                                  },
+                                  onSaved: (v) {
+                                    title = v!;
+                                  },
+                                ),
+                                TextFormField(
+                                  decoration: const InputDecoration(
+                                    hintText: 'Game SubTitle',
+                                  ),
+                                  validator: (String? value) {
+                                    if (value == null || value.isEmpty) {
+                                      return 'Please a subtitle';
+                                    }
+                                    return null;
+                                  },
+                                  onSaved: (v) {
+                                    subtitle = v!;
+                                  },
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      vertical: 16.0),
+                                  child: ElevatedButton(
+                                    onPressed: () {
+                                      // Validate will return true if the form is valid, or false if
+                                      // the form is invalid.
+                                      if (_formKey.currentState!.validate()) {
+                                        _formKey.currentState?.save();
+
+                                        setState(() {
+                                          DataPointsInstance._points
+                                              .add(Game(title, subtitle));
+                                          DataPointsInstance.notifyListeners();
+                                          Navigator.pop(context);
+                                        });
+                                      }
+                                    },
+                                    child: const Text('Submit'),
+                                  ),
+                                ),
+                              ],
+                            ))),
+                  );
+                });
+          },
           icon: const Icon(Icons.numbers),
-          label: const Text("Dosent exsist yet"),
+          label: const Text("Add Game"),
           backgroundColor: flames_red,
         ));
   }

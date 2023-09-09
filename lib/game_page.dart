@@ -15,7 +15,7 @@ import 'package:sports_analyzer_sta/main.dart';
 import 'package:sports_analyzer_sta/stats.dart';
 
 class GamePage extends StatefulWidget {
-  GamePage({super.key, required this.title});
+  const GamePage({super.key, required this.title});
 
   // This widget is the home page of your application. It is stateful, i cant prevent statful
   //i wish for stateless, but yk, l a z y

@@ -7,12 +7,13 @@
 //thank you so much for understandingggggg
 //actual code below :
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it_mixin/get_it_mixin.dart';
-import 'package:sports_analyzer_sta/data_entry.dart';
-import 'package:sports_analyzer_sta/game_page.dart';
 import 'package:get_it/get_it.dart';
+import 'package:sports_analyzer_sta/about.dart';
+import 'package:sports_analyzer_sta/game_page.dart';
 
 import 'firebase_options.dart';
 
@@ -33,64 +34,30 @@ const flames_red = Color(0xffd9232a);
 ///you jut need to r e m e m b e r
 ///mkay
 ///
-
-class Game {
-  String title = "";
-  String subtitle = "";
-  int id = 0;
-  List<Point> points = [];
-
-  Game(String ttitle, String ssubtitle) {
-    title = ttitle;
-    subtitle = ssubtitle;
-  }
-}
-
-class DataPoints extends ChangeNotifier {
-  final List<Game> _points = [];
-  int _selectedGame = 0;
-
-  set points(List<Point> points) {
-    _points[_selectedGame].points = points;
-    //var db = FirebaseFirestore.instance;
-
-    notifyListeners(); // uses the GetIt function to notifi all child widgets to re-build
-  }
-
-  set currentGame(int index) {
-    _selectedGame = index;
-    notifyListeners(); // uses the GetIt function to notifi all child widgets to re-build
-  }
-
-  int get_length() {
-    return _points.length;
-  }
-
-  List<Point> get points => _points[_selectedGame].points;
-  int get currentGame => _selectedGame;
-  Game get selectedGame => _points[_selectedGame];
-}
-
 class GlobalData extends ChangeNotifier {
   int _selectedPlayer = 0;
+  String current_game = "";
 
   set selectedPlayer(int player) {
     _selectedPlayer = player;
     notifyListeners();
   }
 
+  set selectedGame(String player) {
+    current_game = player;
+    notifyListeners();
+  }
+
   int get selectedPlayer =>
       _selectedPlayer; //allows the selected player to remain the same cross-widget
+  String get selectedGame =>
+      current_game; //allows the selected player to remain the same cross-widget
 }
 
 //////////////////////////////////////////
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-
-  GetIt.I.registerSingleton<DataPoints>(
-    DataPoints(),
-  );
 
   GetIt.I.registerSingleton<GlobalData>(
     GlobalData(),
@@ -147,8 +114,13 @@ class _HomePageState extends State<HomePage> {
   var GlobalDataInstance = GetIt.I.get<GlobalData>();
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
+  //this is the temp varublas to store the title and subtitle for the new g a m ez
   String title = "";
   String subtitle = "";
+
+  final Stream<QuerySnapshot> _usersStream =
+      FirebaseFirestore.instance.collection('games').snapshots();
 
   void rebuildAllChildren(BuildContext context) {
     void rebuild(Element el) {
@@ -161,44 +133,76 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    var DataPointsInstance = GetIt.I.get<DataPoints>();
-
+    var db = FirebaseFirestore.instance;
     return Scaffold(
         appBar: AppBar(
           title: const Text("Game select"),
+          actions: [
+            IconButton(
+              icon: const Icon(Icons.settings),
+              tooltip: 'Show settings/About page',
+              onPressed: () {
+                Navigator.of(context)
+                    .push(MaterialPageRoute(builder: (context) {
+                  return About();
+                }));
+              },
+            )
+          ],
         ),
         body: Center(
-          child: Builder(builder: (ctx) {
-            if (DataPointsInstance.get_length() == 0) {
-              return const Text(
-                  "No games found, please add one"); // wow i found so formal -_-
-            }
+          child: StreamBuilder<QuerySnapshot>(
+              stream: _usersStream,
+              builder: (ctx, snapcshots) {
+                if (snapcshots.hasError) {
+                  return const Text('Something went wrong');
+                }
 
-            return ListView.builder(
-                itemCount: DataPointsInstance.get_length(),
-                itemBuilder: (bc, i) {
-                  DataPointsInstance.currentGame = i;
-                  return Card(
-                      child: InkWell(
-                    onTap: () {
-                      DataPointsInstance.currentGame = i;
-                      Navigator.of(context)
-                          .push(MaterialPageRoute(builder: (context) {
-                        return GamePage(title: DataPointsInstance.selectedGame.title);
-                      }));
-                    },
-                    child: Column(
-                      children: [
-                        ListTile(
-                          title: Text(DataPointsInstance.selectedGame.title),
-                          subtitle:
-                              Text(DataPointsInstance.selectedGame.subtitle),
-                        )
-                      ],
-                    ),
-                  ));
-                });
-          }),
+                if (snapcshots.connectionState == ConnectionState.waiting) {
+                  return const CircularProgressIndicator();
+                }
+
+                if (snapcshots.data!.docs.isEmpty) {
+                  return const Text(
+                      "No games found, please add one"); // wow i found so formal -_-
+                }
+
+                return ListView(
+                  children: snapcshots.data!.docs
+                      .map((DocumentSnapshot document) {
+                        Map<String, dynamic> data =
+                            document.data()! as Map<String, dynamic>;
+
+                        // return ListTile(
+                        //   title: Text(data['title']),
+                        //   subtitle: Text(data['subtitle']),
+                        // );
+
+                        return Card(
+                            child: InkWell(
+                                onTap: () {
+                                  Navigator.of(context).push(
+                                      MaterialPageRoute(builder: (context) {
+                                    GlobalDataInstance.current_game =
+                                        document.id;
+                                    return GamePage(
+                                      doc_id: document.id,
+                                    );
+                                  }));
+                                },
+                                child: Column(
+                                  children: [
+                                    ListTile(
+                                      title: Text(data['title']),
+                                      subtitle: Text(data['subtitle']),
+                                    )
+                                  ],
+                                )));
+                      })
+                      .toList()
+                      .cast(),
+                );
+              }),
         ),
         floatingActionButton: FloatingActionButton.extended(
           onPressed: () {
@@ -253,10 +257,17 @@ class _HomePageState extends State<HomePage> {
                                       if (_formKey.currentState!.validate()) {
                                         _formKey.currentState?.save();
 
+                                        final user = <String, dynamic>{
+                                          "title": title,
+                                          "subtitle": subtitle,
+                                          "points": []
+                                        };
+
+                                        db.collection("games").add(user).then(
+                                            (DocumentReference doc) => print(
+                                                'DocumentSnapshot added with ID: ${doc.id}'));
+
                                         setState(() {
-                                          DataPointsInstance._points
-                                              .add(Game(title, subtitle));
-                                          DataPointsInstance.notifyListeners();
                                           Navigator.pop(context);
                                         });
                                       }

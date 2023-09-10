@@ -53,6 +53,8 @@ class DataEntry extends StatefulWidget with GetItStatefulWidgetMixin {
 
 class _DataEntryState extends State<DataEntry> with GetItStateMixin {
   String doc_id = "";
+  Key tap_key = Key("");
+
 
   List<bool> _selected = List.generate(3, (int index) {
     if (index == 1) {
@@ -110,22 +112,29 @@ class _DataEntryState extends State<DataEntry> with GetItStateMixin {
               child: ListView(children: [
             LayoutBuilder(builder: (context, constraigns) {
               double width = constraigns.maxWidth;
+              double height = constraigns.maxHeight;
 
               return Stack(
                 children: [
                   GestureDetector(
+                    key: tap_key,
                     onTapUp: (TapUpDetails details) {
                       setState(() {
                         // do some weird tom fuckery to get the height from the width(aspect ratio math bs)
 
-                        var pos = Offset(details.localPosition.dx / width,
-                            details.localPosition.dy);
+                        final imageSize = context.size;
 
-                        var relitaveposx = details.localPosition.dx / width;
-                        var relitaveposy =
-                            details.localPosition.dy / (width * (16 / 9));
+                        // Calculate the normalized position
+                        final normalizedPosition = Offset(
+                          details.localPosition.dx / imageSize!.width,
+                          details.localPosition.dy / imageSize!.height,
+                        );
+        
 
-                        //print(relitaveposy);
+
+                        print(normalizedPosition.dx);
+                        print(.dy);
+
 
                         DataPointType pointType = DataPointType.Miss;
 
@@ -144,7 +153,7 @@ class _DataEntryState extends State<DataEntry> with GetItStateMixin {
                           pointType = DataPointType.Miss;
                         }
 
-                        var point = (Point(relitaveposx, relitaveposy,
+                        var point = (Point(position.dx, position.dy,
                             pointType, playerNumber));
 
                         FirebaseFirestore.instance

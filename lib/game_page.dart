@@ -14,6 +14,7 @@ import 'package:numberpicker/numberpicker.dart';
 import 'package:sports_analyzer_sta/data_entry.dart';
 //import 'package:sports_analyzer_sta/data_entry.dart';
 import 'package:sports_analyzer_sta/main.dart';
+import 'package:sports_analyzer_sta/stats.dart';
 //import 'package:sports_analyzer_sta/stats.dart';
 
 class GamePage extends StatefulWidget {
@@ -126,8 +127,10 @@ class _GamePageState extends State<GamePage> {
                   return DataEntry(doc_id: doc_id);
                 }
                 if (_selectedIndex == 1) {
-                  
+                  return Stats(doc_id: doc_id,);
                 }
+
+
 
                 return const Center(
                   child: CircularProgressIndicator(),

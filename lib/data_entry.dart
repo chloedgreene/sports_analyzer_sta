@@ -3,11 +3,9 @@ import 'dart:convert';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:sports_analyzer_sta/main.dart';
 
-import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:get_it_mixin/get_it_mixin.dart';
-import 'package:sports_analyzer_sta/data_entry.dart';
 
 enum DataPointType { Basket, Foul, Miss }
 
@@ -112,7 +110,6 @@ class _DataEntryState extends State<DataEntry> with GetItStateMixin {
               child: ListView(children: [
             LayoutBuilder(builder: (context, constraigns) {
               double width = constraigns.maxWidth;
-              double height = constraigns.maxHeight;
 
               return Stack(
                 children: [
@@ -127,7 +124,7 @@ class _DataEntryState extends State<DataEntry> with GetItStateMixin {
                         // Calculate the normalized position
                         final position = Offset(
                           details.localPosition.dx / imageSize!.width,
-                          details.localPosition.dy / imageSize!.height,
+                          details.localPosition.dy / imageSize.height,
                         );
         
 

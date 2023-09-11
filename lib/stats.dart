@@ -1,21 +1,11 @@
-import 'dart:math';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/foundation/diagnostics.dart';
-import 'package:flutter/src/foundation/key.dart';
-import 'package:flutter/src/widgets/framework.dart';
+
 import 'package:get_it_mixin/get_it_mixin.dart';
 import 'package:sports_analyzer_sta/main.dart';
 import 'dart:convert';
 
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:sports_analyzer_sta/main.dart';
-
-import 'package:fl_chart/fl_chart.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
-import 'package:get_it_mixin/get_it_mixin.dart';
 import 'package:sports_analyzer_sta/data_entry.dart';
 
 class Stats extends StatefulWidget with GetItStatefulWidgetMixin {
@@ -112,7 +102,6 @@ class _StatsState extends State<Stats> with GetItStateMixin {
                         });
 
                         //precomcupted stats
-                        int count_points = raw_data.length;
 
                         return LayoutBuilder(builder: (context, constraigns) {
                           double width = constraigns.maxWidth;

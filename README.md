@@ -1,16 +1,24 @@
 # sports_analyzer_sta
 
-A new Flutter project.
+A sports analyzer app for android and web (maybeeee ios not certain)
 
 ## Getting Started
 
-This project is a starting point for a Flutter application.
+Download the release in the "releases" tab
 
-A few resources to get you started if this is your first Flutter project:
+### OR
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+Compile with flutter for android using:
+```
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+flutter build apk
+
+
+# the game is now stored in  build/app/outputs/flutter-apk/app-release.apk 
+# you can install it with
+
+apk install build/app/outputs/flutter-apk/app-release.apk 
+```
+
+NOTE:
+If you get a error about "  uses unchecked or unsafe operations " in a class file, its normal

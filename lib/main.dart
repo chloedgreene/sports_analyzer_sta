@@ -13,6 +13,7 @@ import 'package:flutter/material.dart';
 import 'package:get_it_mixin/get_it_mixin.dart';
 import 'package:get_it/get_it.dart';
 import 'package:sports_analyzer_sta/about.dart';
+import 'package:sports_analyzer_sta/cross_country.dart';
 import 'package:sports_analyzer_sta/game_page.dart';
 
 import 'firebase_options.dart';
@@ -145,6 +146,16 @@ class _HomePageState extends State<HomePage> {
                 Navigator.of(context)
                     .push(MaterialPageRoute(builder: (context) {
                   return About();
+                }));
+              },
+            ),
+            IconButton(
+              icon: const Icon(Icons.directions_run),
+              tooltip: 'Cross Country',
+              onPressed: () {
+                Navigator.of(context)
+                    .push(MaterialPageRoute(builder: (context) {
+                  return CrossCountry();
                 }));
               },
             )

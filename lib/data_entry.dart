@@ -125,15 +125,17 @@ class _DataEntryState extends State<DataEntry> with GetItStateMixin {
                         final imageSize = context.size;
 
                         // Calculate the normalized position
-                        final normalizedPosition = Offset(
+                        final position = Offset(
                           details.localPosition.dx / imageSize!.width,
                           details.localPosition.dy / imageSize!.height,
                         );
         
 
 
-                        print(normalizedPosition.dx);
-                        print(.dy);
+                        print(position.dx);
+                        print(position.dy);
+
+                        //print(.dy);
 
 
                         DataPointType pointType = DataPointType.Miss;

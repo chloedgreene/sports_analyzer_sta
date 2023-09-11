@@ -1,3 +1,8 @@
+
+
+//All code is made by MRMAC
+//https://github.com/MrMacLdn/raceday
+
 import 'package:flutter/material.dart';
 
 class CrossCountry extends StatefulWidget {
@@ -42,7 +47,6 @@ class _CrossCountryState extends State<CrossCountry> {
             fontSize: 20,
           ),
         ),
-        leading: Icon(Icons.run_circle),
       ),
 
       //Body Begins for each team counter

@@ -17,7 +17,7 @@ flutter build apk
 # the game is now stored in  build/app/outputs/flutter-apk/app-release.apk 
 # you can install it with
 
-apk install build/app/outputs/flutter-apk/app-release.apk 
+adb install build/app/outputs/flutter-apk/app-release.apk 
 ```
 
 NOTE:

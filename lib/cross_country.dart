@@ -41,7 +41,7 @@ class _CrossCountryState extends State<CrossCountry> {
       backgroundColor: Theme.of(context).colorScheme.background,
       appBar: AppBar(
         title: const Text(
-          "Raceday",
+          "Cross Country Tracker Plugin",
           style: TextStyle(
             fontWeight: FontWeight.bold,
             fontSize: 20,

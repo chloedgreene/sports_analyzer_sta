@@ -133,8 +133,8 @@ class _StatsState extends State<Stats> with GetItStateMixin {
                                 }
 
                                 return Positioned(
-                                  left: point.posx * width,
-                                  top: point.posy * (width * (16 / 9)),
+                                  left: point.posx * width             / 1.15,
+                                  top: point.posy * (width * (16 / 9)) / 1.15,
                                   child: Container(
                                     width: 15,
                                     height: 15,
